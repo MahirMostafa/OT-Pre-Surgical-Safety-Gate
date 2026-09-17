@@ -56,13 +56,15 @@ export default function SafetyGateCard({ gate, loading = false }) {
         platelet_count:      'Platelet Count',
         inr_clotting:        'INR / Clotting Time',
         allergy_check:       'Surgical Allergy Check',
+        consent_check:       'Informed Surgical Consent',
     };
 
     const gateDescriptions = {
-        procedure_diagnosis: 'CPT code ↔ SNOMED CT cross-validation',
+        procedure_diagnosis: 'CPT code ↔ SNOMED CT structural terminology validation',
         platelet_count:      'LOINC 777-3 — threshold ≥ 100 × 10⁹/L',
         inr_clotting:        'LOINC 6301-6 — threshold ≤ 1.5 INR',
         allergy_check:       'FHIR AllergyIntolerance — surgical antibiotics',
+        consent_check:       'FHIR Consent (R4) — procedure-specific active consent',
     };
 
     return (

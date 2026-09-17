@@ -117,12 +117,56 @@ class FhirTestDataSeeder extends Seeder
             'issued'             => now()->subHours(6)->toIso8601String(),
         ]);
 
+        // ── 6. Consent: Informed Surgical Consent for CPT 27447 ─────────────
+        $this->upsert('Consent', 'consent-test-001', [
+            'resourceType' => 'Consent',
+            'id'           => 'consent-test-001',
+            'status'       => 'active',
+            'scope'        => [
+                'coding' => [[
+                    'system'  => 'http://terminology.hl7.org/CodeSystem/consentscope',
+                    'code'    => 'treatment',
+                    'display' => 'Treatment',
+                ]],
+            ],
+            'category' => [[
+                'coding' => [[
+                    'system'  => 'http://terminology.hl7.org/CodeSystem/consentcategorycodes',
+                    'code'    => 'acd',
+                    'display' => 'Advance Care Directive',
+                ]],
+            ]],
+            'patient'  => ['reference' => 'Patient/test-patient-001'],
+            'dateTime' => now()->subDays(2)->toIso8601String(),
+            'policyRule' => [
+                'coding' => [[
+                    'system' => 'http://terminology.hl7.org/CodeSystem/consentpolicycodes',
+                    'code'   => 'opt-in',
+                ]],
+            ],
+            'provision' => [
+                'type'   => 'permit',
+                'period' => [
+                    'start' => now()->subDays(2)->toIso8601String(),
+                    'end'   => now()->addDays(30)->toIso8601String(),
+                ],
+                'action' => [[
+                    'coding' => [[
+                        'system'  => 'http://www.ama-assn.org/go/cpt',
+                        'code'    => '27447',
+                        'display' => 'Total knee arthroplasty',
+                    ]],
+                ]],
+            ],
+        ]);
+
         $this->command->info('✅ HAPI FHIR test data seeded successfully!');
         $this->command->info('   Patient: test-patient-001');
         $this->command->info('   Procedure: Total Knee Arthroplasty (CPT 27447)');
         $this->command->info('   Diagnosis: Knee Osteoarthritis (SNOMED 57773001)');
         $this->command->info('   Labs: Platelets=145, INR=1.2 (both PASS)');
         $this->command->info('   Allergies: None');
+        $this->command->info('   Consent: Active procedure-specific consent for CPT 27447');
     }
 
     private function upsert(string $resourceType, string $id, array $payload): void

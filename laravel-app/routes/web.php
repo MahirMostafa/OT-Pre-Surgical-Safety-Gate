@@ -24,4 +24,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/pre-op/dashboard', [PreOpController::class, 'dashboard'])->name('pre-op.dashboard');
     Route::post('/pre-op/confirm',  [PreOpController::class, 'confirm'])->name('pre-op.confirm');
     Route::get('/pre-op/export',    [PreOpController::class, 'export'])->name('pre-op.export');
+    Route::post('/pre-op/validate', [PreOpController::class, 'validate'])->name('pre-op.validate');
 });

@@ -197,7 +197,7 @@ export default function PreOpDashboard({ patient, gates, overall, checkedAt }) {
                 </Typography>
                 <Grid container spacing={2.5} sx={{ mb: 3 }}>
                     {(gates ?? []).map((gate) => (
-                        <Grid item xs={12} sm={6} md={3} key={gate.id}>
+                        <Grid item xs={12} sm={6} md={4} lg={2.4} key={gate.id}>
                             <SafetyGateCard gate={gate} />
                         </Grid>
                     ))}

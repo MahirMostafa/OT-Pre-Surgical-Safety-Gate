@@ -285,14 +285,15 @@ palette: {
 ```
 PreOpDashboard
 ├── PatientBanner          ← Patient name (redacted in export), MRN, procedure
-├── SafetyGateCard × 4    ← One per gate, animated status dot
-│   ├── Gate 1: Procedure Match
-│   ├── Gate 2: Lab Safety (Platelets)
-│   ├── Gate 3: Lab Safety (INR)
-│   └── Gate 4: Allergy Check
+├── SafetyGateCard × 5    ← One per gate, animated status dot
+│   ├── Gate 1: Procedure Match (Structural SNOMED/CPT terminology)
+│   ├── Gate 2: Lab Safety (Platelets LOINC 777-3)
+│   ├── Gate 3: Lab Safety (INR LOINC 6301-6)
+│   ├── Gate 4: Allergy Check (FHIR AllergyIntolerance)
+│   └── Gate 5: Informed Consent (FHIR Consent R4)
 ├── LabResultTable         ← MUI DataGrid with threshold coloring
 ├── AllergyAlertBadge      ← MUI Alert chip per dangerous allergy
-└── ExportButton           ← Downloads USCDI JSON + triggers AuditEvent
+└── ExportButton           ← Downloads USCDI US Core FHIR Bundle + triggers AuditEvent
 ```
 
 ---
@@ -318,13 +319,13 @@ PreOpDashboard
 
 ---
 
-## 11. The 4 Safety Gates
+## 11. The 5 Safety Gates
 
-### Gate 1 — Procedure vs. Diagnosis Match
-- Fetch `ServiceRequest` → extract CPT code
-- Fetch `Condition` → extract SNOMED code
-- Compare against hardcoded CPT↔SNOMED mapping table
-- **PASS**: codes match | **WARN**: partial match | **HOLD**: mismatch
+### Gate 1 — Procedure vs. Diagnosis Match (Structural Terminology)
+- Fetch `ServiceRequest` → extract CPT code via system URI (`http://www.ama-assn.org/go/cpt`)
+- Fetch `Condition` → extract SNOMED CT code via system URI (`http://snomed.info/sct`)
+- Structural validation against clinical indications & FHIR `$validate-code` terminology operations
+- **PASS**: codes valid & indicated | **WARN**: partial match/missing code | **HOLD**: mismatch or contraindication
 
 ### Gate 2 — Platelet Count Safety
 - FHIR `Observation?code=777-3` (LOINC: Platelets)
@@ -338,6 +339,15 @@ PreOpDashboard
 - FHIR `AllergyIntolerance?patient={id}`
 - Flag if any allergy substance matches: Cephalosporins, Penicillin, Vancomycin, Clindamycin
 - **PASS**: none | **WARN**: cross-reactive class | **HOLD**: direct match
+
+### Gate 5 — Informed Surgical Consent
+- FHIR `Consent?patient={id}&status=active`
+- Validates:
+  - `status = 'active'`
+  - `provision.type = 'permit'`
+  - `provision.action.coding` matches the specific surgical procedure CPT code
+  - `provision.period` validity window covers the surgery date
+- **PASS**: active valid consent for procedure | **WARN**: consent expiring soon | **HOLD**: no valid consent found
 
 ---
 

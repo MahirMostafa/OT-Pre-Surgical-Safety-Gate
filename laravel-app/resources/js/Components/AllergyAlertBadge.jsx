@@ -35,7 +35,7 @@ export default function AllergyAlertBadge({ allergyGate }) {
                 icon={isHold ? <BlockIcon /> : <WarningAmberIcon />}
                 sx={{ borderRadius: 2, mb: 1.5 }}
             >
-                <strong>{isHold ? '🚫 HOLD — ' : '⚠️ Warning — '}</strong>
+                <strong>{isHold ? 'HOLD — ' : 'Warning — '}</strong>
                 {allergyGate.message}
             </Alert>
 

@@ -26,7 +26,7 @@ const OVERALL_CONFIG = {
         bg:       'linear-gradient(135deg, rgba(76,175,80,0.15), rgba(56,142,60,0.08))',
         border:   'rgba(76,175,80,0.4)',
         icon:     CheckCircleIcon,
-        label:    '✅ ALL CLEAR — Safe to Proceed',
+        label:    'ALL CLEAR — Safe to Proceed',
         severity: 'success',
     },
     warn: {
@@ -34,7 +34,7 @@ const OVERALL_CONFIG = {
         bg:       'linear-gradient(135deg, rgba(255,152,0,0.15), rgba(245,124,0,0.08))',
         border:   'rgba(255,152,0,0.4)',
         icon:     WarningIcon,
-        label:    '⚠️ CAUTION — Review Warnings Before Proceeding',
+        label:    'CAUTION — Review Warnings Before Proceeding',
         severity: 'warning',
     },
     hold: {
@@ -42,7 +42,7 @@ const OVERALL_CONFIG = {
         bg:       'linear-gradient(135deg, rgba(244,67,54,0.18), rgba(198,40,40,0.1))',
         border:   'rgba(244,67,54,0.5)',
         icon:     BlockIcon,
-        label:    '🚫 HOLD — Do NOT Proceed Until Resolved',
+        label:    'HOLD — Do NOT Proceed Until Resolved',
         severity: 'error',
     },
 };

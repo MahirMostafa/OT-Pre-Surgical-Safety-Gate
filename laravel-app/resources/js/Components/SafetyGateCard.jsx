@@ -34,7 +34,7 @@ const STATUS_CONFIG = {
         borderColor: 'rgba(244,67,54,0.4)',
         glowColor: 'rgba(244,67,54,0.15)',
         icon: BlockIcon,
-        chipLabel: '🚫 HOLD',
+        chipLabel: 'HOLD',
         chipColor: 'error',
         pulse: '#F44336',
     },

@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # ─── Nginx Web Server ───────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: ot_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./laravel-app:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - ot_network
+
+  # ─── Laravel PHP-FPM Application ────────────────────────────────────────────
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: ot_app
+    working_dir: /var/www/html
+    volumes:
+      - ./laravel-app:/var/www/html
+    environment:
+      - PHP_FPM_USER=www-data
+      - PHP_FPM_GROUP=www-data
+    depends_on:
+      mysql:
+        condition: service_healthy
+      hapi-fhir:
+        condition: service_started
+    networks:
+      - ot_network
+
+  # ─── MySQL 8 Database ───────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: ot_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-ot_safety_gate}
+      MYSQL_USER: ${DB_USERNAME:-ot_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-ot_secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root_secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ot_network
+
+  # ─── HAPI FHIR R4 Server ────────────────────────────────────────────────────
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    container_name: ot_hapi_fhir
+    ports:
+      - "8080:8080"
+    volumes:
+      - hapi_data:/data/hapi
+      - ./docker/hapi-fhir/application.yaml:/app/config/application.yaml
+    environment:
+      - hapi.fhir.fhir_version=R4
+      - spring.config.additional-location=file:///app/config/application.yaml
+    networks:
+      - ot_network
+
+# ─── Networks ─────────────────────────────────────────────────────────────────
+networks:
+  ot_network:
+    driver: bridge
+
+# ─── Volumes ──────────────────────────────────────────────────────────────────
+volumes:
+  mysql_data:
+    driver: local
+  hapi_data:
+    driver: local

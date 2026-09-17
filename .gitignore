@@ -1,0 +1,25 @@
+# ─── Laravel Application ─────────────────────────────────────────────────────
+laravel-app/.env
+laravel-app/storage/
+laravel-app/bootstrap/cache/
+laravel-app/vendor/
+laravel-app/node_modules/
+laravel-app/public/hot
+laravel-app/public/storage
+laravel-app/public/build/
+
+# ─── Docker ──────────────────────────────────────────────────────────────────
+.env
+docker/mysql/data/
+
+# ─── IDE & OS ─────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# ─── NPM ─────────────────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

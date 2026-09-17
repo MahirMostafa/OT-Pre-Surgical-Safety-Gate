@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: 'jdbc:h2:mem:testdb'
+    username: sa
+    password: ''
+    driverClassName: org.h2.Driver
+
+hapi:
+  fhir:
+    fhir_version: R4
+    cors:
+      allow_Credentials: true
+      allowed_origin:
+        - '*'
+    # Allow all FHIR operations for development
+    allow_multiple_delete: true
+    allow_external_references: true
+    expunge_enabled: true
+    # Enable narrative generation
+    narrative_enabled: false
+    # Server address (for self-referential links)
+    server_address: 'http://hapi-fhir:8080/fhir'
